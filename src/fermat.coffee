@@ -44,7 +44,7 @@ $ ->
       l31 = legs[(i + 2) % 3]
       theta = Math.acos((sql12 + sql31 - sql23) / (2 * l12 * l31))
       if theta > 2*Math.PI/3
-        return [p1, ps, theta * 180 / Math.PI]
+        return [ps[i], ps, theta * 180 / Math.PI]
 
     # Calculate barycentrics
     bcs = []
