@@ -60,8 +60,8 @@ $ ->
 
     # Convert barycentrics to cartesian coordinates
     point = [
-      (bcs[0]*ps[0][0] + bcs[1]*ps[1][0] + bcs[2]*ps[2][0]) / (bcs[0] + bcs[1] + bcs[2]),
-      (bcs[0]*ps[0][1] + bcs[1]*ps[1][1] + bcs[2]*ps[2][1]) / (bcs[0] + bcs[1] + bcs[2])
+      (bcs[1]*ps[0][0] + bcs[2]*ps[1][0] + bcs[0]*ps[2][0]) / (bcs[0] + bcs[1] + bcs[2]),
+      (bcs[1]*ps[0][1] + bcs[2]*ps[1][1] + bcs[0]*ps[2][1]) / (bcs[0] + bcs[1] + bcs[2])
     ]
 
     [point, ps, null]

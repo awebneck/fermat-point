@@ -48,7 +48,7 @@
         l31 = legs[(i + 2) % 3];
         theta = Math.acos((sql12 + sql31 - sql23) / (2 * l12 * l31));
         if (theta > 2 * Math.PI / 3) {
-          return [p1, ps, theta * 180 / Math.PI];
+          return [ps[i], ps, theta * 180 / Math.PI];
         }
       }
       bcs = [];
@@ -62,7 +62,7 @@
         bc = Math.pow(sql12, 2) - 2 * Math.pow(sql23 - sql31, 2) + sql12 * (sql23 + sql31 + 4 * Math.sqrt(3) * a);
         bcs.push(bc);
       }
-      point = [(bcs[0] * ps[0][0] + bcs[1] * ps[1][0] + bcs[2] * ps[2][0]) / (bcs[0] + bcs[1] + bcs[2]), (bcs[0] * ps[0][1] + bcs[1] * ps[1][1] + bcs[2] * ps[2][1]) / (bcs[0] + bcs[1] + bcs[2])];
+      point = [(bcs[1] * ps[0][0] + bcs[2] * ps[1][0] + bcs[0] * ps[2][0]) / (bcs[0] + bcs[1] + bcs[2]), (bcs[1] * ps[0][1] + bcs[2] * ps[1][1] + bcs[0] * ps[2][1]) / (bcs[0] + bcs[1] + bcs[2])];
       return [point, ps, null];
     };
     return $(".svg-wrapper svg").svg({
