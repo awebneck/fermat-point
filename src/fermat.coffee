@@ -1,13 +1,14 @@
 $ ->
+  dragInterval = null
+  ps = []
   drawAnswer = (p, ps, angle)->
-    if angle
-      console.log("angle greater than 120 degrees detected:", angle)
-    console.log("fermat point:", p)
-
+    $("line").remove()
+    $("circle.fermat-point").remove()
     wrapper = $('.svg-wrapper')
     svg = wrapper.find('svg').svg 'get'
-    svg.circle p[0], p[1], 5,
+    c = svg.circle p[0], p[1], 5,
       fill: "red"
+    $(c).addClass('fermat-point')
     for op in ps
       svg.line op[0], op[1], p[0], p[1],
         "stroke-width": 1
@@ -66,6 +67,15 @@ $ ->
 
     [point, ps, null]
 
+  dragCorner = (e, c)->
+    index = parseInt(c.attributes['data-index'].value)
+    $(c).attr('cx', e.pageX)
+    $(c).attr('cy', e.pageY)
+    ps[index][0] = e.pageX
+    ps[index][1] = e.pageY
+    answer = findFermatPoint ps
+    drawAnswer.apply(null, answer)
+
   $(".svg-wrapper svg").svg
     onLoad: ->
 
@@ -73,12 +83,21 @@ $ ->
       svg = wrapper.find('svg').svg 'get'
 
       # Build and draw points
-      ps = []
       for i in [0...3]
         p = [Math.floor(Math.random()*1000), Math.floor(Math.random()*800)]
-        svg.circle p[0], p[1], 3
+        c = svg.circle p[0], p[1], 10
+        $(c).addClass('corner').attr('data-index', i)
         ps.push p
 
       # Find and draw the answer
       answer = findFermatPoint ps
       drawAnswer.apply(null, answer)
+      $("circle.corner").on('mousedown', ->
+        c = @
+        $("body").on('mousemove', (e)->
+          dragCorner(e, c)
+        )
+      )
+      $("body").on('mouseup', ->
+        $("body").off('mousemove')
+      )

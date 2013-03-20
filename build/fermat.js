@@ -2,18 +2,19 @@
 (function() {
 
   $(function() {
-    var drawAnswer, findFermatPoint;
+    var dragCorner, dragInterval, drawAnswer, findFermatPoint, ps;
+    dragInterval = null;
+    ps = [];
     drawAnswer = function(p, ps, angle) {
-      var op, svg, wrapper, _i, _len, _results;
-      if (angle) {
-        console.log("angle greater than 120 degrees detected:", angle);
-      }
-      console.log("fermat point:", p);
+      var c, op, svg, wrapper, _i, _len, _results;
+      $("line").remove();
+      $("circle.fermat-point").remove();
       wrapper = $('.svg-wrapper');
       svg = wrapper.find('svg').svg('get');
-      svg.circle(p[0], p[1], 5, {
+      c = svg.circle(p[0], p[1], 5, {
         fill: "red"
       });
+      $(c).addClass('fermat-point');
       _results = [];
       for (_i = 0, _len = ps.length; _i < _len; _i++) {
         op = ps[_i];
@@ -65,19 +66,38 @@
       point = [(bcs[1] * ps[0][0] + bcs[2] * ps[1][0] + bcs[0] * ps[2][0]) / (bcs[0] + bcs[1] + bcs[2]), (bcs[1] * ps[0][1] + bcs[2] * ps[1][1] + bcs[0] * ps[2][1]) / (bcs[0] + bcs[1] + bcs[2])];
       return [point, ps, null];
     };
+    dragCorner = function(e, c) {
+      var answer, index;
+      index = parseInt(c.attributes['data-index'].value);
+      $(c).attr('cx', e.pageX);
+      $(c).attr('cy', e.pageY);
+      ps[index][0] = e.pageX;
+      ps[index][1] = e.pageY;
+      answer = findFermatPoint(ps);
+      return drawAnswer.apply(null, answer);
+    };
     return $(".svg-wrapper svg").svg({
       onLoad: function() {
-        var answer, i, p, ps, svg, wrapper, _i;
+        var answer, c, i, p, svg, wrapper, _i;
         wrapper = $('.svg-wrapper');
         svg = wrapper.find('svg').svg('get');
-        ps = [];
         for (i = _i = 0; _i < 3; i = ++_i) {
           p = [Math.floor(Math.random() * 1000), Math.floor(Math.random() * 800)];
-          svg.circle(p[0], p[1], 3);
+          c = svg.circle(p[0], p[1], 10);
+          $(c).addClass('corner').attr('data-index', i);
           ps.push(p);
         }
         answer = findFermatPoint(ps);
-        return drawAnswer.apply(null, answer);
+        drawAnswer.apply(null, answer);
+        $("circle.corner").on('mousedown', function() {
+          c = this;
+          return $("body").on('mousemove', function(e) {
+            return dragCorner(e, c);
+          });
+        });
+        return $("body").on('mouseup', function() {
+          return $("body").off('mousemove');
+        });
       }
     });
   });
