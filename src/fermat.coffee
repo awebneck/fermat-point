@@ -69,10 +69,13 @@ $ ->
 
   dragCorner = (e, c)->
     index = parseInt(c.attributes['data-index'].value)
-    $(c).attr('cx', e.pageX)
-    $(c).attr('cy', e.pageY)
-    ps[index][0] = e.pageX
-    ps[index][1] = e.pageY
+    offset = $("svg").offset()
+    adjustedX = e.pageX - offset.left
+    adjustedY = e.pageY - offset.top
+    $(c).attr('cx', adjustedX)
+    $(c).attr('cy', adjustedY)
+    ps[index][0] = adjustedX
+    ps[index][1] = adjustedY
     answer = findFermatPoint ps
     drawAnswer.apply(null, answer)
 
